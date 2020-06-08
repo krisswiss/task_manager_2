@@ -24,4 +24,22 @@
 
     </ul>
 </div>
+
+  <form action="#">
+
+    <p>
+      <input class="with-gap" name="group1" type="radio" id="test3"  />
+      <label for="test3">All</label>
+    </p>
+    
+    {% for task in tasks %}
+    <p>
+      <input class="with-gap" name="group1" type="radio" id="test4"  />
+      <label for="test3">{{task.category_name}}</label>
+    </p>
+    {% endfor %}
+
+  </form>
+
+
 {% endblock %}

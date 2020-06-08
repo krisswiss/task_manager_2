@@ -6,7 +6,7 @@ from bson.objectid import ObjectId
 
 app = Flask(__name__)
 app.config["MONGO_DBNAME"] = 'task_manager'
-app.config["MONGO_URI"] = 'mongodb+srv://root:r00tUser@myfirstcluster-8xuvz.mongodb.net/task_manager?retryWrites=true&w=majority'
+app.config["MONGO_URI"] = 'mongodb+srv://root:crisso69@myfirstcluster-8xuvz.mongodb.net/task_manager?retryWrites=true&w=majority'
 
 mongo = PyMongo(app)
 
@@ -67,6 +67,12 @@ def get_categories():
 @app.route('/delete_category/<category_id>')
 def delete_category(category_id):
     mongo.db.categories.remove({'_id': ObjectId(category_id)})
+    mongo.db.tasks.remove({'cat_id': ObjectId(category_id)})
+    
+    """
+    remove_tasks = mongo.db.tasks.find({"cat_id": ObjectId(category_id)})
+    mongo.db.tasks.remove({"cat_id": ObjectId(remove_tasks)})
+    """
     return redirect(url_for('get_categories'))
 
 
