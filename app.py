@@ -14,7 +14,7 @@ mongo = PyMongo(app)
 @app.route('/get_tasks')
 def get_tasks():
     return render_template("tasks.html", 
-                           tasks=mongo.db.tasks.find())
+                           tasks=list(mongo.db.tasks.find()))
 
 
 @app.route('/add_task')
@@ -68,7 +68,6 @@ def get_categories():
 def delete_category(category_id):
     mongo.db.categories.remove({'_id': ObjectId(category_id)})
     mongo.db.tasks.remove({'cat_id': ObjectId(category_id)})
-    
     """
     remove_tasks = mongo.db.tasks.find({"cat_id": ObjectId(category_id)})
     mongo.db.tasks.remove({"cat_id": ObjectId(remove_tasks)})
