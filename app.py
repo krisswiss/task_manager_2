@@ -1,21 +1,30 @@
 import os
-from flask import Flask, render_template, redirect, request, url_for, request
+from flask import Flask, render_template, redirect, request, url_for
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
-
+from os import path
+if path.exists("env.py"):
+    import env
 
 app = Flask(__name__)
-app.config["MONGO_DBNAME"] = 'task_manager'
-app.config["MONGO_URI"] = 'mongodb+srv://root:crisso69@myfirstcluster-8xuvz.mongodb.net/task_manager?retryWrites=true&w=majority'
+app.config["MONGO_DBNAME"] = os.environ.get('MONGO_DBNAME')
+app.config["MONGO_URI"] = os.environ.get('MONGO_URI')
 
 mongo = PyMongo(app)
 
 @app.route('/')
-@app.route('/get_tasks')
+@app.route('/get_tasks', methods=['POST', 'GET'])
 def get_tasks():
-    return render_template("tasks.html", 
-                           tasks=list(mongo.db.tasks.find()))
+    return render_template("tasks.html",
+                           tasks=mongo.db.tasks.find(),
+                           categories=mongo.db.categories.find())
 
+@app.route('/results', methods=['POST', 'GET'])
+def results():
+    selected_category = request.form['category_name']
+    tasks = mongo.db.tasks.find( {"category_name": (selected_category)}  )
+    categories = mongo.db.categories.find()
+    return render_template("tasks.html", tasks=tasks, categories=categories)
 
 @app.route('/add_task')
 def add_task():
